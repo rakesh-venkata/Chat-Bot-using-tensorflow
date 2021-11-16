@@ -1,19 +1,27 @@
+# installing packages
+
 !pip install tflearn
+!pip install tensorflow
+
+# Importing modules
+
 import nltk
 nltk.download('punkt')
-
 from nltk.stem.lancaster import LancasterStemmer
 stemmer = LancasterStemmer()
-
 import numpy
 import tflearn
 import tensorflow
 import random
-
 import json
+
+# Loading data to our python script
+
 with open('intents.json') as file:
     data = json.load(file)
-print(data)
+    
+# Extracting Data(suitable for training)
+
 words = []
 labels = []
 docs_x = []
@@ -28,6 +36,9 @@ for intent in data['intents']:
         
     if intent['tag'] not in labels:
         labels.append(intent['tag'])
+        
+# Converting data into numerical values
+
 training = []
 output = []
 
@@ -51,6 +62,9 @@ for x, doc in enumerate(docs_x):
     output.append(output_row)
 training = numpy.array(training)
 output = numpy.array(output)
+
+# Creating a neural network model
+
 tensorflow.compat.v1.reset_default_graph()
 
 net = tflearn.input_data(shape=[None, len(training[0])])
@@ -60,8 +74,13 @@ net = tflearn.fully_connected(net, len(output[0]), activation="softmax")
 net = tflearn.regression(net)
 
 model = tflearn.DNN(net)
+
+# Training the model
+
 model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
 model.save("model.tflearn")
+
+# Conversation with chatbot
 def bag_of_words(s, words):
     bag = [0 for _ in range(len(words))]
 
