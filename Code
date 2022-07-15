@@ -39,6 +39,10 @@ for intent in data['intents']:
         
 # Converting data into numerical values
 
+
+words = [stemmer.stem(w.lower()) for w in words if w != "?"]
+words = sorted(list(set(words)))
+
 training = []
 output = []
 
